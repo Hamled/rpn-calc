@@ -92,19 +92,20 @@ int main() {
                     cur_value += ctod(c);
                     state = INT;
                 }
+                continue;
             } else if(c == '.') {
                 frac_dig = 1;
                 state = FRAC;
-            } else if(c == '\n') {
-                break; // We only accept one line
-            } else if(isspace(c)) {
-                if(state != NONE) {
-                    val_push(cur_value);
-                    cur_value = 0.0;
-                }
+                continue;
+            }
+
+            if(state != NONE) {
+                val_push(cur_value);
+                cur_value = 0.0;
                 state = NONE;
-            } else {
-                state = NONE;
+            }
+
+            if(!isspace(c)) {
                 switch(c) {
                     case '+': DO_OP(+); break;
                     case '-': DO_OP(-); break;
