@@ -36,8 +36,8 @@ void val_push(val entry) {
         size_t new_size = sizeof(val) * val_stack.capacity;
         val *new_entries = (val *)realloc(val_stack.entries, new_size);
         if(!new_entries) {
-            free(val_stack.entries);
             puts("Stack overflow");
+            val_free();
             abort();
         }
         val_stack.entries = new_entries;
@@ -49,6 +49,7 @@ void val_push(val entry) {
 val val_pop() {
     if(!val_stack.count) {
         puts("Stack underflow");
+        val_free();
         abort();
     }
 
@@ -121,7 +122,8 @@ int main() {
                     case '/': DO_OP(/); break;
                     default:
                         printf("Unknown operation %c\n", c);
-                        abort();
+                        val_free();
+                        exit(EXIT_FAILURE);
                 }
             }
         }
@@ -129,10 +131,13 @@ int main() {
 
     if(read_sz < 0) {
         printf("STDIN read error: %s\n", strerror(errno));
-        abort();
+        val_free();
+        exit(errno);
     }
 
-    printf("%g\n", val_pop());
+    if(val_stack.count) {
+        printf("%g\n", val_pop());
+    }
 
     val_free();
     return EXIT_SUCCESS;
