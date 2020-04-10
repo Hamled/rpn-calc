@@ -21,6 +21,14 @@ void val_init() {
     val_stack.entries = NULL;
 }
 
+void val_free() {
+    if(val_stack.entries) {
+        free(val_stack.entries);
+    }
+    val_stack.count = 0;
+    val_stack.capacity = 0;
+}
+
 void val_push(val entry) {
     if(val_stack.capacity < val_stack.count + 1) {
         size_t old_cap = val_stack.capacity;
@@ -126,5 +134,6 @@ int main() {
 
     printf("%g\n", val_pop());
 
+    val_free();
     return EXIT_SUCCESS;
 }
